@@ -1,0 +1,14 @@
+.git
+.gitignore
+.vscode
+.idea
+*.md
+node_modules
+__pycache__
+.pytest_cache
+.terraform
+*.tfstate
+.env
+.env.local
+dist
+build

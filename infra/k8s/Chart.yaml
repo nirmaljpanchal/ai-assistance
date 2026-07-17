@@ -1,0 +1,15 @@
+apiVersion: v2
+name: ai-assistance-platform
+description: AI Assistance Platform Helm Chart
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+
+keywords:
+  - ai
+  - assistance
+  - platform
+
+maintainers:
+  - name: Your Name
+    email: your.email@example.com

@@ -1,0 +1,48 @@
+replicaCount: 1
+
+backend:
+  image:
+    repository: ai-assistance/backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8000
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+frontend:
+  image:
+    repository: ai-assistance/frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3000
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "250m"
+
+ingress:
+  enabled: false
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: ai-assistance.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+
+persistence:
+  enabled: false
+  storageClassName: azurerm-disk
+  size: 10Gi

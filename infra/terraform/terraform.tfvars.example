@@ -1,0 +1,7 @@
+azure_subscription_id = "your-subscription-id"
+azure_tenant_id       = "your-tenant-id"
+azure_client_id       = "your-client-id"
+azure_client_secret   = "your-client-secret"
+azure_location        = "eastus"
+project_name          = "ai-assistance"
+environment           = "dev"

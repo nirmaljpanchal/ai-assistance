@@ -1,0 +1,20 @@
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+
+# Install uv
+RUN pip install uv
+
+# Copy pyproject.toml and install dependencies
+COPY backend/pyproject.toml .
+RUN uv pip install --python /usr/local/bin/python -e .
+
+# Copy application code
+COPY backend/ .
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

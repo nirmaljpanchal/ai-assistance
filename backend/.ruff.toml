@@ -1,0 +1,29 @@
+# Ruff configuration
+line-length = 100
+target-version = "py311"
+
+[lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "C",      # flake8-comprehensions
+    "B",      # flake8-bugbear
+    "UP",     # pyupgrade
+    "A",      # flake8-builtins
+    "ARG",    # flake8-unused-arguments
+    "SIM",    # flake8-simplify
+]
+ignore = [
+    "E501",   # line too long, handled by formatter
+    "B008",   # do not perform function calls in argument defaults
+    "ARG001", # unused function argument
+]
+
+[lint.per-file-ignores]
+"__init__.py" = ["F401", "F403"]
+"tests/**" = ["ARG001"]
+
+[lint.isort]
+known-third-party = ["fastapi", "pydantic", "sqlalchemy"]

@@ -1,0 +1,52 @@
+name: Deploy to Azure
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.0
+
+      - name: Terraform Init
+        run: |
+          cd infra/terraform
+          terraform init
+
+      - name: Terraform Plan
+        run: |
+          cd infra/terraform
+          terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        run: |
+          cd infra/terraform
+          terraform apply -auto-approve tfplan
+
+      - name: Build and Push Docker images
+        run: |
+          az acr login --name ${{ secrets.AZURE_REGISTRY_NAME }}
+          docker build -f docker/Dockerfile.backend -t ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/backend:${{ github.sha }} .
+          docker build -f docker/Dockerfile.frontend -t ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/frontend:${{ github.sha }} .
+          docker push ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/backend:${{ github.sha }}
+          docker push ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/frontend:${{ github.sha }}
+
+      - name: Deploy to AKS
+        run: |
+          az aks get-credentials --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --name ${{ secrets.AZURE_CLUSTER_NAME }}
+          helm upgrade --install ai-assistance ./infra/k8s \
+            --set backend.image.tag=${{ github.sha }} \
+            --set frontend.image.tag=${{ github.sha }}

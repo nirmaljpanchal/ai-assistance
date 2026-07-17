@@ -1,0 +1,5 @@
+ragas==0.1.0
+deepeval==0.21.0
+pytest==7.4.3
+python-dotenv==1.0.0
+pandas==2.1.3
