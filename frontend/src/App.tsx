@@ -1,23 +1,29 @@
-import { useState } from 'react'
+import { Navigate, Route, BrowserRouter, Routes } from 'react-router-dom'
+
 import './App.css'
+import { AuthProvider } from './auth/AuthContext'
+import { ProtectedRoute } from './auth/ProtectedRoute'
+import { AdminDocumentsPage } from './pages/AdminDocumentsPage'
+import { LoginPage } from './pages/LoginPage'
 
 function App(): JSX.Element {
-  const [count, setCount] = useState<number>(0)
-
   return (
-    <div className="app">
-      <div className="card">
-        <button onClick={() => setCount((c) => c + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite logo to learn more
-      </p>
-    </div>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/admin/documents"
+            element={
+              <ProtectedRoute requireRole="admin">
+                <AdminDocumentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/" element={<Navigate to="/admin/documents" replace />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   )
 }
 

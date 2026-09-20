@@ -40,6 +40,10 @@ ENV/
 .coverage
 htmlcov/
 .tox/
+.mypy_cache/
+
+# Uploaded documents
+data/
 
 # Environment
 .env

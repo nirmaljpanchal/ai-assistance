@@ -1,16 +1,16 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import App from './App'
 
-describe('App', () => {
-  it('renders and increments count', async () => {
-    render(<App />)
-    const button = screen.getByRole('button', { name: /count is 0/i })
-    expect(button).toBeInTheDocument()
+vi.mock('./api/auth', () => ({
+  me: vi.fn().mockRejectedValue(new Error('not authenticated')),
+  login: vi.fn(),
+  logout: vi.fn(),
+}))
 
-    const user = userEvent.setup()
-    await user.click(button)
-    expect(screen.getByRole('button', { name: /count is 1/i })).toBeInTheDocument()
+describe('App', () => {
+  it('redirects unauthenticated users to the login page', async () => {
+    render(<App />)
+    expect(await screen.findByRole('heading', { name: /sign in/i })).toBeInTheDocument()
   })
 })

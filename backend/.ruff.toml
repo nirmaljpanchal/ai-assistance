@@ -19,6 +19,7 @@ ignore = [
     "E501",   # line too long, handled by formatter
     "B008",   # do not perform function calls in argument defaults
     "ARG001", # unused function argument
+    "A003",   # "id" shadowing a builtin is standard for ORM/schema models
 ]
 
 [lint.per-file-ignores]

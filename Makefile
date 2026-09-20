@@ -1,4 +1,4 @@
-.PHONY: help install install-backend install-frontend test test-backend test-frontend test-evals lint format docker-build docker-up docker-down clean
+.PHONY: help install install-backend install-frontend test test-backend test-frontend test-evals lint format docker-build docker-up docker-down clean db-upgrade db-downgrade create-admin
 
 help:
 	@echo "AI Assistance Platform - Available Commands"
@@ -27,6 +27,11 @@ help:
 	@echo "  make docker-build         Build Docker images"
 	@echo "  make docker-up            Start services with Docker Compose"
 	@echo "  make docker-down          Stop services"
+	@echo ""
+	@echo "Database:"
+	@echo "  make db-upgrade           Apply Alembic migrations"
+	@echo "  make db-downgrade         Revert the last Alembic migration"
+	@echo "  make create-admin EMAIL=... PASSWORD=...   Create an admin user"
 	@echo ""
 	@echo "Cleanup:"
 	@echo "  make clean                Clean build artifacts and cache"
@@ -84,6 +89,15 @@ docker-up:
 
 docker-down:
 	docker-compose -f docker/compose.yml down
+
+db-upgrade:
+	cd backend && alembic upgrade head
+
+db-downgrade:
+	cd backend && alembic downgrade -1
+
+create-admin:
+	cd backend && python -m app.scripts.create_admin --email "$(EMAIL)" --password "$(PASSWORD)"
 
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
